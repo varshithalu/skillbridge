@@ -8,8 +8,8 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-    email = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String)
-    role = Column(String)
+    role = Column(String, nullable=False)
     institution_id = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
