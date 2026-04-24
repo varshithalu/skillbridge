@@ -1,0 +1,112 @@
+Role-->	Allowed APIs
+Student-->	attendance
+Trainer-->	sessions, batches
+Institution-->	batch summary
+Programme Manager-->	programme summary
+Monitoring officer-->	monitoring endpoints ONLY
+
+
+//------------------------------------------------------------
+🎯 🔐 TOKEN → API ACCESS MAP
+🟢 STUDENT TOKEN
+
+👉 Login as:
+
+student0@mail.com / 123
+✅ Allowed APIs---------------
+POST /batches/join
+POST /attendance/mark
+
+GET /auth/me-----------------
+❌ Not allowed
+Create batch ❌
+Create session ❌
+View summaries ❌
+=================================================
+🟡 TRAINER TOKEN
+
+👉 Login as:
+
+trainer0@mail.com / 123
+✅ Allowed APIs------------------
+POST /batches
+POST /batches/{id}/invite
+POST /sessions
+GET /sessions/{id}/attendance
+GET /auth/me
+
+❌ Not allowed------------------
+Join batch ❌
+Programme summary ❌
+Monitoring ❌
+
+==================================================================================
+🔵 INSTITUTION TOKEN
+
+👉 Login as:
+
+inst1@mail.com / 123
+
+✅ Allowed APIs---------------------------------
+GET /batches/{id}/summary
+GET /auth/me
+
+=====================================================================================
+🟣 PROGRAMME MANAGER TOKEN
+
+👉 Signup manually:
+
+{
+  "name": "Manager",
+  "email": "manager@mail.com",
+  "password": "123",
+  "role": "programme_manager"
+}
+✅ Allowed APIs-------------------------
+GET /programme/summary
+GET /auth/me
+
+==================================================================================================
+🔴 MONITORING OFFICER (SPECIAL)
+
+👉 Signup:
+
+{
+  "name": "Monitor",
+  "email": "monitor@mail.com",
+  "password": "123",
+  "role": "monitoring_officer"
+}
+
+===========================================================================
+🔥 IMPORTANT: TWO TOKENS
+Step 1: Normal login token
+Step 2: Get monitoring token
+POST /auth/monitoring-token
+key=supersecretmonitorkey
+
+✅ Allowed API (ONLY THIS)-----------------------------
+GET /monitoring/attendance
+
+❌ Not allowed------------------------
+Batch summary ❌
+Programme summary ❌
+Any POST/PUT/DELETE ❌
+
+====================================================================================================
+⚠️ CRITICAL RULES
+🔐 Rule 1: Every request must use correct token
+Wrong role → 403 Forbidden
+🔐 Rule 2: Monitoring token is scoped
+Only works for /monitoring/*
+🔐 Rule 3: No token
+→ 401 Unauthorized
+
+========================================================================================================
+🧠 SUPER QUICK CHEAT SHEET
+Role -->	What they do
+Student -->	Attend
+Trainer -->	Teach
+Institution -->	Monitor batch
+Manager -->	Analyze programme
+Monitoring -->	Read-only global
