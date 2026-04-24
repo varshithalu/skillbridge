@@ -6,7 +6,10 @@ app = FastAPI()
 
 @app.on_event("startup")
 def on_startup():
-    init_db()
+    try:
+        init_db()
+    except Exception as e:
+        print("Startup failed but app will continue:", e)
 
 @app.get("/")
 def root():

@@ -4,8 +4,9 @@ from app.core.config import DATABASE_URL
 
 engine = create_engine(
     DATABASE_URL,
-    pool_pre_ping=True,  
-    pool_recycle=300      
+    pool_pre_ping=True,
+    pool_recycle=300,
+    connect_args={"sslmode": "require"}  # 🔥 important for Neon
 )
 
 SessionLocal = sessionmaker(
