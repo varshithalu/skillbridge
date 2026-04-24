@@ -1,49 +1,45 @@
 #  SkillBridge Backend API
 
 A role-based attendance management backend built using FastAPI, PostgreSQL (Neon), and JWT authentication.
-
 This project simulates a state-level skilling programme system with multiple roles and strict backend-enforced access control.
 
----
 
-# 📌 Live API
+# Deployed using Render
+Base URL: `https://skillbridge-8e1w.onrender.com/docs`
 
-*(Add after deployment)*
-Base URL: `https://your-api-url.com`
 
----
-
-# 🧠 Overview
+#  Overview
 
 SkillBridge supports five roles:
+* "Student" → Marks attendance
+* "Trainer" → Creates sessions, manages batches
+* "Institution" → Views batch-level analytics
+* "Programme Manager" → Views programme-level analytics
+* "Monitoring Officer" → Read-only global access via scoped token
 
-* **Student** → Marks attendance
-* **Trainer** → Creates sessions, manages batches
-* **Institution** → Views batch-level analytics
-* **Programme Manager** → Views programme-level analytics
-* **Monitoring Officer** → Read-only global access via scoped token
+## Key Highlights
+- Implemented role-based access control (RBAC) across 5 roles
+- Designed dual-token architecture for secure monitoring access
+- Built scalable many-to-many relationships for batch management
+- Deployed production-ready API using Render
+- Achieved test coverage using pytest
 
----
+# Tech Stack
+* "Backend": FastAPI
+* "Database": PostgreSQL (Neon)
+* "ORM": SQLAlchemy
+* "Authentication": JWT (python-jose)
+* "Testing": pytest
+* "Deployment": Render / Railway
 
-# ⚙️ Tech Stack
 
-* **Backend**: FastAPI
-* **Database**: PostgreSQL (Neon)
-* **ORM**: SQLAlchemy
-* **Authentication**: JWT (python-jose)
-* **Testing**: pytest
-* **Deployment**: Render / Railway
-
----
-
-# 🚀 Local Setup
-
+# Local Setup
 ```bash
-git clone <your-repo-link>
-cd skillbridge-backend
+git clone `https://github.com/varshithalu/skillbridge`
+cd backend
 
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\Activate.ps1  --> [for windows]
 
 pip install -r requirements.txt
 ```
@@ -64,9 +60,8 @@ Run server:
 uvicorn app.main:app --reload
 ```
 
----
 
-# 🧪 Test Accounts
+# Test Accounts
 
 Seeded accounts:
 
@@ -88,9 +83,8 @@ Programme Manager
 Monitoring Officer
 ```
 
----
 
-# 🔐 Authentication
+#  Authentication
 
 ## Standard JWT
 
@@ -104,7 +98,6 @@ Payload:
 }
 ```
 
----
 
 ## Monitoring Token (Scoped)
 
@@ -112,7 +105,7 @@ Flow:
 
 1. Login → get JWT
 2. Call `/auth/monitoring-token` with API key
-3. Receive **1-hour scoped token**
+3. Receive "1-hour scoped token"
 
 Payload includes:
 
@@ -131,11 +124,10 @@ Used ONLY for:
 GET /monitoring/attendance
 ```
 
----
 
-# 📡 API Usage (cURL Examples)
+# API Usage (cURL Examples)
 
-## 🔹 Signup
+## Signup
 
 ```bash
 curl -X POST http://127.0.0.1:8000/auth/signup \
@@ -143,9 +135,8 @@ curl -X POST http://127.0.0.1:8000/auth/signup \
 -d '{"name":"User","email":"user@mail.com","password":"123","role":"student"}'
 ```
 
----
 
-## 🔹 Login
+## Login
 
 ```bash
 curl -X POST http://127.0.0.1:8000/auth/login \
@@ -153,9 +144,8 @@ curl -X POST http://127.0.0.1:8000/auth/login \
 -d '{"email":"student0@mail.com","password":"123"}'
 ```
 
----
 
-## 🔹 Create Batch (Trainer)
+## Create Batch (Trainer)
 
 ```bash
 curl -X POST http://127.0.0.1:8000/batches \
@@ -164,9 +154,8 @@ curl -X POST http://127.0.0.1:8000/batches \
 -d '{"name":"Batch A","institution_id":1}'
 ```
 
----
 
-## 🔹 Join Batch (Student)
+## Join Batch (Student)
 
 ```bash
 curl -X POST http://127.0.0.1:8000/batches/join \
@@ -175,9 +164,8 @@ curl -X POST http://127.0.0.1:8000/batches/join \
 -d '{"token":"invite-token"}'
 ```
 
----
 
-## 🔹 Mark Attendance
+## Mark Attendance
 
 ```bash
 curl -X POST http://127.0.0.1:8000/attendance/mark \
@@ -186,9 +174,8 @@ curl -X POST http://127.0.0.1:8000/attendance/mark \
 -d '{"session_id":1,"status":"present"}'
 ```
 
----
 
-## 🔹 Monitoring Token
+## Monitoring Token
 
 ```bash
 curl -X POST http://127.0.0.1:8000/auth/monitoring-token \
@@ -197,20 +184,18 @@ curl -X POST http://127.0.0.1:8000/auth/monitoring-token \
 -d '{"key":"supersecretmonitorkey"}'
 ```
 
----
 
-## 🔹 Monitoring Attendance
+## Monitoring Attendance
 
 ```bash
 curl -X GET http://127.0.0.1:8000/monitoring/attendance \
 -H "Authorization: Bearer <MONITOR_TOKEN>"
 ```
 
----
 
-# 🧱 Schema Design Decisions
+# Schema Design Decisions
 
-### 🔹 Many-to-Many Relationships
+### Many-to-Many Relationships
 
 Used:
 
@@ -219,17 +204,15 @@ Used:
 
 This ensures scalability and avoids duplication.
 
----
 
-### 🔹 Invite System
+### Invite System
 
 * Token-based batch joining
 * Supports expiry and single-use
 * Decouples enrollment logic from direct DB writes
 
----
 
-### 🔹 Dual Token Architecture
+### Dual Token Architecture
 
 Monitoring officer uses:
 
@@ -238,9 +221,8 @@ Monitoring officer uses:
 
 This isolates read-only access securely.
 
----
 
-# 🧪 Tests
+#  Tests
 
 Run:
 
@@ -256,18 +238,16 @@ Covers:
 * Monitoring 405 check
 * Unauthorized access
 
----
 
-# ⚠️ Error Handling
+#  Error Handling
 
 * `401` → Missing/invalid token
 * `403` → Role not permitted
 * `404` → Invalid resource
 * `422` → Validation failure
 
----
 
-# ✅ What’s Complete
+# completed tasks
 
 * Full core API
 * JWT + RBAC
@@ -275,21 +255,13 @@ Covers:
 * Seed data
 * Basic test coverage
 
----
 
-# ⚠️ What’s Partially Done / Missing
+# partially done / Missing
 
 * `GET /institutions/{id}/summary` (not implemented)
 * Some tests are minimal and can be expanded
 * No pagination for large datasets
 
----
-
-# 🔧 One Improvement (If More Time)
-
-I would implement **token revocation / blacklist system** to invalidate tokens before expiry, improving security in real-world deployments.
-
----
 
 # Contact
 
