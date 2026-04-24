@@ -19,13 +19,15 @@ def init_db():
 
     db = SessionLocal()
 
-    # ⚠️ Prevent duplicate seeding
-    if db.query(User).first():
+    # Check if institution already exists
+    existing_inst = db.query(User).filter(User.email == "inst1@mail.com").first()
+
+    if existing_inst:
         db.close()
         return
 
     # 🏫 Institutions
-    inst1 = User(
+    inst1 = User(   
         name="Institution A",
         email="inst1@mail.com",
         hashed_password=hash_password("123"),
